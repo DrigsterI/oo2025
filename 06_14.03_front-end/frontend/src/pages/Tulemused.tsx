@@ -1,32 +1,32 @@
 import { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { useRef } from "react";
-import { Sportlane } from "../models/Sportlane";
+import { ScoreType, Tulemus } from "../models/Tulemus";
 
-function MainPage() {
-  const [sportlased, setSportlased] = useState<Sportlane[]>([]);
-  const [totalSportlased, setTotalSportlased] = useState(0);
+function Tulemused() {
+  const [tulemused, setTulemused] = useState<Tulemus[]>([]);
+  const [totalTulemused, setTotalTulemused] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [sportlasedByPage, setSportlasedByPage] = useState(1);
+  const [tulemusedByPage, setTulemusedByPage] = useState(10);
   const [page, setPage] = useState(0);
 
   const showByPage = useCallback(
     (currentPage: number) => {
       setPage(currentPage);
       fetch(
-        "http://localhost:8080/sportlasedPaged?size=" +
-          sportlasedByPage +
+        "http://localhost:8080/tulemusedPaged?size=" +
+          tulemusedByPage +
           "&page=" +
           currentPage
       )
         .then((res) => res.json())
         .then((json) => {
-          setSportlased(json.content);
-          setTotalSportlased(json.totalElements);
+          setTulemused(json.content);
+          setTotalTulemused(json.totalElements);
           setTotalPages(json.totalPages);
         });
     },
-    [sportlasedByPage]
+    [tulemusedByPage]
   );
 
   useEffect(() => {
@@ -39,38 +39,36 @@ function MainPage() {
 
   const productsByPageRef = useRef<HTMLSelectElement>(null);
 
-                                          return (
+  return (
     <div>
       <label htmlFor="perPage">Per page</label>
       <select
         id="perPage"
         ref={productsByPageRef}
         onChange={() =>
-          setSportlasedByPage(Number(productsByPageRef.current?.value))
+          setTulemusedByPage(Number(productsByPageRef.current?.value))
         }
       >
-        <option>1</option>
-        <option>3</option>
-        <option>6</option>
+        <option>10</option>
+        <option>20</option>
+        <option>50</option>
       </select>
       <br />
       <br />
-      <div>Kokku tooteid: {totalSportlased} tk</div>
+      <div>Kokku tooteid: {totalTulemused} tk</div>
       <table border={1}>
         <tr>
           <th>ID</th>
-          <th>Nimi</th>
-          <th>Riik</th>
-          <th>Vanus</th>
+          <th>Tupp</th>
           <th>Puktid</th>
+          <th>Sportlane</th>
         </tr>
-        {sportlased.map((sportlane) => (
-          <tr key={sportlane.id}>
-            <td>{sportlane.id}</td>
-            <td>{sportlane.nimi}</td>
-            <td>{sportlane.riik}</td>
-            <td>{sportlane.vanus}</td>
-            <td>{sportlane.punktid}</td>
+        {tulemused.map((tulemus) => (
+          <tr key={tulemus.id}>
+            <td>{tulemus.id}</td>
+            <td>{ScoreType[tulemus.tupp]}</td>
+            <td>{tulemus.punktid}</td>
+            <td>{tulemus.sportlane?.nimi}</td>
           </tr>
         ))}
       </table>
@@ -90,4 +88,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default Tulemused;

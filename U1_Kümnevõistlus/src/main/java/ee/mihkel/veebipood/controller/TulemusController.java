@@ -4,6 +4,8 @@ import ee.mihkel.veebipood.entity.ScoreType;
 import ee.mihkel.veebipood.entity.Tulemus;
 import ee.mihkel.veebipood.repository.TulemusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +20,11 @@ public class TulemusController {
     @GetMapping("tulemused")
     public List<Tulemus> getTulemus() {
         return tulemusRepository.findAll();
+    }
+
+    @GetMapping("tulemusedPaged")
+    public Page<Tulemus> getTulemusPages(Pageable pageable) {
+        return tulemusRepository.findAll(pageable);
     }
 
     @PostMapping("tulemused")

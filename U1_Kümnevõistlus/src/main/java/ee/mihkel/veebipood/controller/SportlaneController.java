@@ -4,6 +4,8 @@ import ee.mihkel.veebipood.entity.*;
 import ee.mihkel.veebipood.repository.SportlaneRepository;
 import ee.mihkel.veebipood.repository.TulemusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +28,16 @@ public class SportlaneController {
             int punktidKokku = calculatePunktid(sportlane.getId());
             return new SportlanePunktiga(sportlane, punktidKokku);
         }).collect(Collectors.toList());
+    }
+
+    @GetMapping("sportlasedPaged")
+    public Page<SportlanePunktiga> getSportlanePages(Pageable pageable) {
+        Page<Sportlane> sportlased = sportlaneRepository.findAll(pageable);
+
+        return sportlased.map((sportlane) -> {
+            int punktidKokku = calculatePunktid(sportlane.getId());
+            return new SportlanePunktiga(sportlane, punktidKokku);
+        });
     }
 
     @PostMapping("sportlased")
