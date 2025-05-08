@@ -40,6 +40,22 @@ public class SportlaneController {
         });
     }
 
+    @GetMapping("sportlasedFilteredPaged")
+    public Page<SportlanePunktiga> getSportlanePages(@RequestParam String riik, Pageable pageable) {
+        Page<Sportlane> sportlased = null;
+        if(riik.trim().isEmpty()){
+            sportlased = sportlaneRepository.findAll(pageable);
+        }
+        else{
+            sportlased = sportlaneRepository.findByRiikContaining(riik, pageable);
+        }
+
+        return sportlased.map((sportlane) -> {
+            int punktidKokku = calculatePunktid(sportlane.getId());
+            return new SportlanePunktiga(sportlane, punktidKokku);
+        });
+    }
+
     @PostMapping("sportlased")
     public List<Sportlane> addSportlane(@RequestBody Sportlane sportlane) {
         if (sportlane.getId() != null) {

@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SportlaneRepository extends JpaRepository<Sportlane, Long> {
     Page<Sportlane> findAll(Pageable pageable);
+
+    Page<Sportlane> findByRiikContaining(String riik, Pageable pageable);
 }

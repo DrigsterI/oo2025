@@ -9,15 +9,18 @@ function MainPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [sportlasedByPage, setSportlasedByPage] = useState(1);
   const [page, setPage] = useState(0);
+  const [riik, setRiik] = useState("");
 
   const showByPage = useCallback(
     (currentPage: number) => {
       setPage(currentPage);
       fetch(
-        "http://localhost:8080/sportlasedPaged?size=" +
+        "http://localhost:8080/sportlasedFilteredPaged?size=" +
           sportlasedByPage +
           "&page=" +
-          currentPage
+          currentPage +
+          "&riik=" +
+          riik
       )
         .then((res) => res.json())
         .then((json) => {
@@ -26,7 +29,7 @@ function MainPage() {
           setTotalPages(json.totalPages);
         });
     },
-    [sportlasedByPage]
+    [riik, sportlasedByPage]
   );
 
   useEffect(() => {
@@ -39,7 +42,7 @@ function MainPage() {
 
   const productsByPageRef = useRef<HTMLSelectElement>(null);
 
-                                          return (
+  return (
     <div>
       <label htmlFor="perPage">Per page</label>
       <select
@@ -54,6 +57,8 @@ function MainPage() {
         <option>6</option>
       </select>
       <br />
+      <label htmlFor="riik">Riik</label>
+      <input id="riik" type="text" onChange={(e) => setRiik(e.target.value)} />
       <br />
       <div>Kokku tooteid: {totalSportlased} tk</div>
       <table border={1}>
