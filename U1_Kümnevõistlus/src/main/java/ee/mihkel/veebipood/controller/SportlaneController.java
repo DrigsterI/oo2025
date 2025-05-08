@@ -1,16 +1,13 @@
 package ee.mihkel.veebipood.controller;
 
-import ee.mihkel.veebipood.entity.DataType;
-import ee.mihkel.veebipood.entity.Parameters;
-import ee.mihkel.veebipood.entity.Sportlane;
-import ee.mihkel.veebipood.entity.Tulemus;
+import ee.mihkel.veebipood.entity.*;
 import ee.mihkel.veebipood.repository.SportlaneRepository;
 import ee.mihkel.veebipood.repository.TulemusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Parameter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -22,8 +19,13 @@ public class SportlaneController {
     private TulemusRepository tulemusRepository;
 
     @GetMapping("sportlased")
-    public List<Sportlane> getSportlane() {
-        return sportlaneRepository.findAll();
+    public List<SportlanePunktiga> getSportlane() {
+        List<Sportlane> sportlased = sportlaneRepository.findAll();
+
+        return sportlased.stream().map((sportlane) -> {
+            int punktidKokku = calculatePunktid(sportlane.getId());
+            return new SportlanePunktiga(sportlane, punktidKokku);
+        }).collect(Collectors.toList());
     }
 
     @PostMapping("sportlased")
@@ -75,6 +77,10 @@ public class SportlaneController {
 
     @GetMapping("sportlased/{id}/punktid")
     public int getSportlanePunktid(@PathVariable Long id) {
+        return calculatePunktid(id);
+    }
+
+    private int calculatePunktid(long id){
         List<Tulemus> tilemused = tulemusRepository.findBySportlane_Id(id);
         int punktidKukku = 0;
         for (Tulemus t : tilemused) {
@@ -91,6 +97,7 @@ public class SportlaneController {
                     throw new RuntimeException("Unsupported tupp " + t.getTupp());
             }
         }
+
         return punktidKukku;
     }
 
