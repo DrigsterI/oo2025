@@ -25,6 +25,9 @@ public class TulemusController {
         if (tulemus.getId() != null) {
             throw new RuntimeException("ERROR_CANNOT_ADD_WITH_ID");
         }
+        if (tulemus.getSportlane() == null) {
+            throw new RuntimeException("ERROR_SPORTLANE_CANT_BE_NULL");
+        }
         if (tulemus.getPunktid() <= 0) {
             throw new RuntimeException("ERROR_PUNKTIND_MUST_BE_POSITIVE");
         }
@@ -42,6 +45,9 @@ public class TulemusController {
     public List<Tulemus> editTulemus(@RequestBody Tulemus tulemus) {
         if (tulemus.getId() == null) {
             throw new RuntimeException("ERROR_CANNOT_EDIT_WITHOUT_ID");
+        }
+        if (tulemus.getSportlane() == null) {
+            throw new RuntimeException("ERROR_SPORTLANE_CANT_BE_NULL");
         }
         if (tulemus.getPunktid() <= 0) {
             throw new RuntimeException("ERROR_PUNKTIND_MUST_BE_POSITIVE");

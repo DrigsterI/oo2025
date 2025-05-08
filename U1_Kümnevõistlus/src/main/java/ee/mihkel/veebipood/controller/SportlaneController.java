@@ -31,6 +31,12 @@ public class SportlaneController {
         if (sportlane.getId() != null) {
             throw new RuntimeException("ERROR_CANNOT_ADD_WITH_ID");
         }
+        if (sportlane.getNimi().trim().isEmpty()) {
+            throw new RuntimeException("ERROR_NIMI_MUST_NOT_BE_EMPTY");
+        }
+        if (sportlane.getRiik().trim().isEmpty()) {
+            throw new RuntimeException("ERROR_RIIK_MUST_NOT_BE_EMPTY");
+        }
         if (sportlane.getVanus() <= 0) {
             throw new RuntimeException("ERROR_VANUS_MUST_BE_POSITIVE");
         }
@@ -48,6 +54,12 @@ public class SportlaneController {
     public List<Sportlane> editSportlane(@RequestBody Sportlane sportlane) {
         if (sportlane.getId() == null) {
             throw new RuntimeException("ERROR_CANNOT_EDIT_WITHOUT_ID");
+        }
+        if (sportlane.getNimi().trim().isEmpty()) {
+            throw new RuntimeException("ERROR_NIMI_MUST_NOT_BE_EMPTY");
+        }
+        if (sportlane.getRiik().trim().isEmpty()) {
+            throw new RuntimeException("ERROR_RIIK_MUST_NOT_BE_EMPTY");
         }
         if (sportlane.getVanus() <= 0) {
             throw new RuntimeException("ERROR_VANUS_MUST_BE_POSITIVE");
@@ -84,13 +96,20 @@ public class SportlaneController {
 
     @PatchMapping("sportlased/{id}")
     public List<Sportlane> editSportlaneValue(@PathVariable Long id, String field, String value) {
-        if (id == null) {
-            throw new RuntimeException("ERROR_CANNOT_EDIT_WITHOUT_ID");
-        }
         Sportlane sportlane = sportlaneRepository.findById(id).orElseThrow();
         switch (field) {
-            case "nimi" -> sportlane.setNimi(value);
-            case "riik" -> sportlane.setRiik(value);
+            case "nimi" -> {
+                if (sportlane.getNimi().trim().isEmpty()) {
+                    throw new RuntimeException("ERROR_NIMI_MUST_NOT_BE_EMPTY");
+                }
+                sportlane.setNimi(value);
+            }
+            case "riik" -> {
+                if (sportlane.getRiik().trim().isEmpty()) {
+                    throw new RuntimeException("ERROR_RIIK_MUST_NOT_BE_EMPTY");
+                }
+                sportlane.setRiik(value);
+            }
             case "vanus" -> {
                 int vanus = Integer.parseInt(value);
                 if (vanus <= 0) {
