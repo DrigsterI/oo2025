@@ -31,8 +31,6 @@ public class SonadController {
     public Page<Sona> getSonadPages(@RequestParam(required = false) String search, @RequestParam(required = false) String filterSonastik, Pageable pageable) {
         if(filterSonastik != null){
             Sonastik sonastik = sonastikRepository.findById(Long.parseLong(filterSonastik)).orElse(null);
-            System.out.println(sonastik);
-            System.out.println(sonastik.getName());
             if(search != null) {
                 return sonaRepository.findByTypeContainingAndSonastik(search, sonastik, pageable);
             }
@@ -89,9 +87,6 @@ public class SonadController {
                 sonaRepository.save(sona);
             } catch (Exception e) {
                 System.out.println(e);
-                System.out.println(sona.getTypeID());
-                System.out.println(sona.getType());
-                System.out.println(sona.getDescription());
             }
         }
         return sonaRepository.findAll();
@@ -104,7 +99,6 @@ public class SonadController {
 
     @PatchMapping("sonad/{id}")
     public List<Sona> editSonaValue(@PathVariable Long id, @RequestParam String field, @RequestParam String value) {
-        System.out.println(id + " " + field + " " + value);
         if (id == null) {
             throw new RuntimeException("ERROR_CANNOT_EDIT_WITHOUT_ID");
         }

@@ -57,7 +57,9 @@ function ManageSonad() {
     const newSona = {
       type: typeRef.current?.value,
       description: descriptionRef.current?.value,
-      sonastik: sonastikRef.current?.value,
+      sonastik: {
+        id: sonastikRef.current?.value
+      },
     };
 
     fetch(`http://localhost:8080/sonad`, {
